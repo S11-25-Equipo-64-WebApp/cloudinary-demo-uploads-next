@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   if (!cloudName || !apiKey || !apiSecret) {
     return NextResponse.json(
       { error: "Cloudinary env vars are not set" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 
@@ -39,17 +39,16 @@ export async function POST(request: Request) {
       typeof paramsToSign.timestamp === "number"
         ? paramsToSign.timestamp
         : Math.round(Date.now() / 1000),
-    ...(defaultFolder && { folder: paramsToSign.folder ?? defaultFolder }),
+    //...(defaultFolder && { folder: paramsToSign.folder ?? defaultFolder }),
   };
 
-  const signature = cloudinary.utils.api_sign_request(
-    uploadParams,
-    apiSecret,
-  );
+  console.table(paramsToSign);
+  console.table(uploadParams);
+
+  const signature = cloudinary.utils.api_sign_request(uploadParams, apiSecret);
 
   return NextResponse.json({
     signature,
     timestamp: uploadParams.timestamp,
   });
 }
-
